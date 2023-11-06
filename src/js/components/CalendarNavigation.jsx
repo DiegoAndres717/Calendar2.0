@@ -1,92 +1,85 @@
-import React, { useCallback } from 'react';
+import { useCallback } from "react";
+import { ButtonArrow } from "./buttons/ButtonArrow";
+import { IconArrowRight } from "./icons/IconArrowRight";
+import { IconArrowLeft } from "./icons/IconArrowLeft";
 
-const CalendarNavigation = ({children, title, handleBackButtonClick, currentMonth, maxMonth, setCurrentMonth }) => {
-	const handleNextMonthClick = useCallback(() => {
-		setCurrentMonth((currentMonth) => {
-			if (currentMonth === maxMonth) {
-				return maxMonth;
-			} else {
-				const nextMonth = currentMonth + 1;
-				setCurrentMonth(nextMonth - 1);
-				return nextMonth;
-			}
-		});
-	}, [maxMonth, setCurrentMonth]);
+const CalendarNavigation = ({
+  handleBackButtonClick,
+  currentMonth,
+  maxMonth,
+  setCurrentMonth,
+}) => {
+  const handleNextMonthClick = useCallback(() => {
+    setCurrentMonth((currentMonth) => {
+      if (currentMonth === maxMonth) {
+        return maxMonth;
+      } else {
+        const nextMonth = currentMonth + 1;
+        return nextMonth;
+      }
+    });
+  }, [maxMonth, setCurrentMonth]);
 
-	const handlePrevMonthClick = useCallback(() => {
-		setCurrentMonth((currentMonth) => {
-			if (currentMonth === 0) {
-				return 0;
-			} else {
-				const prevMonth = currentMonth - 1;
-				setCurrentMonth(prevMonth - 1);
-				return prevMonth;
-			}
-		});
-	}, [setCurrentMonth]);
+  const handlePrevMonthClick = useCallback(() => {
+    setCurrentMonth((currentMonth) => {
+      if (currentMonth === 0) {
+        return 0;
+      } else {
+        const prevMonth = currentMonth - 1;
+        return prevMonth;
+      }
+    });
+  }, [setCurrentMonth]);
 
-	return (
-    <div className="cb__navegacion"> 
-    { (handleBackButtonClick || (currentMonth && currentMonth !== 1) || currentMonth !== maxMonth) && 
-      <nav aria-label="Navegación">    
-        <ul>    
-              { handleBackButtonClick && 
-            <li>
-            <button
-                className="cb__button"
-                onClick={handleBackButtonClick}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-                </svg>
-                <span>
-                  Regresar
-                </span>
-              </button>    
-            </li>
-            }
-        </ul>
-        <ul>
-          { currentMonth && currentMonth !== 1 &&
-          <li>
-            <button
-            className="cb__button"
-              onClick={handlePrevMonthClick}
+  return (
+    <>
+      <div className="w-[90%] h-16">
+        <div className="flex flex-row justify-between">
+          <ButtonArrow
+            title="Regresar"
+            icon={<IconArrowLeft />}
+            iconPosition="after"
+            btnStyle="p-2 bg-[#004a72] hover:bg-gradient-custom text-md md:text-lg text-white font-bold rounded-[7px] shadow border border-neutral-200"
+            handleClick={handleBackButtonClick}
+          />
+          <div className="w-auto p-2 text-center text-sky-950 text-lg font-bold">
+            Calendario {maxMonth} meses
+          </div>
+        </div>
+        <div className="flex flex-row items-center justify-between md_media:translate-x-[18rem] md_media:-translate-y-[3.9rem] md_media:w-[50%] mt-4">
+          {currentMonth && (
+            <ButtonArrow
+              title={`Anterior`}
               disabled={currentMonth === 1}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-              </svg>
-              <span>
-                Ir a mes {currentMonth - 1}
-              </span>
-            </button>
-          </li>
-          }
-          { currentMonth !== maxMonth &&
-          <li>
-            <button
-            className="cb__button icon-right"
-              onClick={handleNextMonthClick}
-            >
-              <span>
-              Ir a mes {currentMonth + 1}
-              </span>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-              </svg>
-            </button>
-          </li>
-          }  
-        </ul>
-      </nav>
-}
-      <div className="cb__navigation-details">
-      { title != "" && <h2>{title}</h2>}
-      { children }
+              handleClick={handlePrevMonthClick}
+              icon={<IconArrowLeft />}
+              iconPosition="after"
+              btnStyle={`${
+                currentMonth === 1 &&
+                "bg-calendar-btn-custom-gray pointer-events-none text-gray-400"
+              } p-2 text-md hover:bg-opacity-1 hover:bg-calendar-btn-custom-gray md:text-lg w-full bg-neutral-50 rounded-[7px] font-bold shadow border border-neutral-200`}
+            />
+          )}
+          <div className="w-full p-2 flex items-center justify-center text-center text-sky-950 text-xl font-extrabold">
+            Mes {currentMonth}
+          </div>
+          {currentMonth && (
+            <ButtonArrow
+              title={`Siguiente`}
+              handleClick={handleNextMonthClick}
+              icon={<IconArrowRight />}
+              iconPosition="before"
+              disabled={currentMonth === maxMonth}
+              btnStyle={`${
+                currentMonth === maxMonth &&
+                "bg-calendar-btn-custom-gray pointer-events-none text-gray-400"
+              } p-2 w-full text-md hover:bg-opacity-1 hover:bg-calendar-btn-custom-gray md:text-lg bg-neutral-50 rounded-[7px] font-bold shadow border border-neutral-200`}
+            />
+          )}
+        </div>
       </div>
-    </div>
-	);
+    </>
+  );
 };
 
 export default CalendarNavigation;
